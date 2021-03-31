@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+```
+
+```{r}
+movies <- read.csv("data/movies.csv")
+movies
+```
+
+```{r}
+names(movies)
+```
+
+```{r}
+movies_selected <- movies %>% 
+  select(original_title, runtime, budget)
+movies_selected
+```
+
+```{r}
+movies_selected %>% 
+ summarise(count_missing = sum(is.na(movies_selected)))
+```
+
+```{r}
+movies_runtime <- movies_selected %>% 
+  mutate(runtime = na_if(runtime, "0"))
+movies_runtime
+```
+
+```{r}
+movies_runtime %>% 
+ summarise(count_missing = sum(is.na(runtime)))
+```
+
+```{r}
+movies_imputed <- movies_runtime %>% 
+  mutate(runtime = coalesce(runtime, median(runtime, na.rm = TRUE)))
+
+movies_imputed
+
+```
+
+```{r}
+movies_imputed %>% 
+   summarise(count_missing = sum(is.na(runtime)))
+```
+
+
+```{r}
+movies_imputed %>% 
+  slice_min(runtime, n = 10)
+```
+
+```{r}
+movies_imputed %>% 
+  slice_max(runtime, n = 10)
+```
+
+
+```{r}
+movies_selected %>% 
+  mutate(movies_imputed = if_else(budget < 100, median(budget), budget))
+```
+
+```{r}
+movie_budgets <- movies_imputed %>% 
+  select(budget) %>% 
+  mutate(budget_type = case_when(
+      budget < "12e6" ~ "Small budget",
+      budget = "12e6:40e6" ~ "Medium budget",
+      budget > "40e6" ~ "Big budget",
+      TRUE         ~ as.logical(budget)
+    )
+  )
+```
+
