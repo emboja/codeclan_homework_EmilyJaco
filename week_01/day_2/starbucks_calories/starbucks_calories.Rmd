@@ -22,39 +22,76 @@ names(starbucks)
 ```
 2. 
 ```{r}
-select(starbucks, Beverage_category, Beverage, Beverage_prep, Calories)
+select(starbucks, Beverage_category, Beverage, Beverage_prep, Calories) %>% 
+  filter(is.na(Calories)) %>% 
+  summarise(count_of_missing_calories = n())
 ```
 3.
 ```{r}
-mutate(starbucks, calorie_diff = (135 - Calories), .after = Calories)
+drink_calories <- starbucks %>% 
+  mutate(calorie_diff = (Calories - 135), .after = Calories)
+drink_calories
 ```
 4.
 ```{r}
-calories <- summarise(starbucks, Beverage, Calories, Beverage_category)
-calories
+most_calories <- drink_calories %>% 
+  group_by(Beverage_category) %>% 
+  summarise(mean_calories = mean(Calories)) %>% 
+  arrange(desc(mean_calories)) %>% 
+  head(3)
+
+most_calories
 ```
 
 ```{r}
-arrange(calories, desc(Calories))
+least_calories <- drink_calories %>% 
+  group_by(Beverage_category) %>% 
+  summarise(mean_calories = mean(Calories)) %>% 
+  arrange(mean_calories) %>% 
+  head(3)
 
+least_calories
 ```
-Most calories:
-White Chocolate Mocha (Without Whipped Cream)
-    White Chocolate Mocha (Without Whipped Cream)
-    Java Chip (Without Whipped Cream)
     
-    
-```{r}
-arrange(calories, (Calories))
-```
-Tazo Tea x 3 have the least calories
 5.
 ```{r}
-summarise(starbucks, Beverage_prep, Calories)
+average_bev_prep <- starbucks %>% 
+  group_by (Beverage_prep) %>% 
+  summarise(mean_cals = mean(Calories)) %>% 
+  arrange(desc(mean_cals))
+average_bev_prep
 ```
 6.
 ```{r}
-summarise(starbucks = mean(Calories, na.rm = TRUE))
+avg_calories <- starbucks %>% 
+  summarise (mean_calories = mean(Calories)) %>% 
+  pull()
+avg_calories
 ```
 
+```{r}
+above_avg_calories <- average_bev_prep %>% 
+  filter(mean_cals >= avg_calories)
+above_avg_calories
+```
+
+7.
+```{r}
+head(drink_calories)
+
+drink_calories %>% 
+    group_by(Beverage_category, Beverage, Beverage_prep) %>%
+  summarise(min_calories = min(Calories)) %>%
+  arrange(min_calories) %>%
+  head(1)
+```
+
+```{r}
+drink_calories %>%
+  filter(Beverage_category != "Tazo® Tea Drinks") %>%
+  group_by(Beverage_category, Beverage, Beverage_prep) %>%
+  summarise(min_calories = min(Calories)) %>%
+  arrange(min_calories) %>%
+  head(1)
+```
 
