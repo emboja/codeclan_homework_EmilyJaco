@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+```
+```{r}
+starbucks <- read.csv("data/starbucks_drinkMenu_expanded.csv")
+```
+
+```{r}
+summary(starbucks)
+```
+
+```{r}
+variable.names(starbucks)
+```
+
+```{r}
+names(starbucks)
+```
+2. 
+```{r}
+select(starbucks, Beverage_category, Beverage, Beverage_prep, Calories)
+```
+3.
+```{r}
+mutate(starbucks, calorie_diff = (135 - Calories), .after = Calories)
+```
+4.
+```{r}
+calories <- summarise(starbucks, Beverage, Calories, Beverage_category)
+calories
+```
+
+```{r}
+arrange(calories, desc(Calories))
+
+```
+Most calories:
+White Chocolate Mocha (Without Whipped Cream)
+    White Chocolate Mocha (Without Whipped Cream)
+    Java Chip (Without Whipped Cream)
+    
+    
+```{r}
+arrange(calories, (Calories))
+```
+Tazo Tea x 3 have the least calories
+5.
+```{r}
+summarise(starbucks, Beverage_prep, Calories)
+```
+6.
+```{r}
+summarise(starbucks = mean(Calories, na.rm = TRUE))
+```
+
+
