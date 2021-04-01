@@ -24,6 +24,11 @@ movies_selected
 ```{r}
 movies_selected %>% 
  summarise(count_missing = sum(is.na(movies_selected)))
+
+movies_selected %>% 
+  summarise(na_runtime = sum(is.na(runtime)),
+            na_title = sum(is.na(title)),
+            na_budget = sum(is.na(budget)))
 ```
 
 ```{r}
@@ -69,13 +74,22 @@ movies_selected %>%
 
 ```{r}
 movie_budgets <- movies_imputed %>% 
-  select(budget) %>% 
   mutate(budget_type = case_when(
-      budget < "12e6" ~ "Small budget",
-      budget = "12e6:40e6" ~ "Medium budget",
-      budget > "40e6" ~ "Big budget",
-      TRUE         ~ as.logical(budget)
+      budget < 12e6 ~ "Small budget",
+      budget < 40e6 ~ "Medium budget",
+      budget >= 40e6 ~ "Big budget",
     )
   )
+movie_budgets
+```
+
+```{r}
+movies %>%
+  summarise(across(where(is.numeric), ~sum(is.na(.x))))
+```
+
+```{r}
+movies %>%
+  summarise(across(where(is.character), ~sum(is.na(.x))))
 ```
 
