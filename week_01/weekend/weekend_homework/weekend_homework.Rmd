@@ -1,0 +1,48 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+books <- read.csv("data/books.csv")
+books
+```
+
+```{r}
+dim(books)
+```
+
+```{r}
+view(books)
+```
+
+```{r}
+names(books)
+```
+
+```{r}
+summary(books)
+```
+
+```{r}
+sum(is.na())
+```
+
+```{r}
+nrow(books)
+```
+
+```{r}
+ncol(books)
+```
+
+```{r}
+books %>% 
+  select(title, average_rating, num_pages)
+  
+```
+
