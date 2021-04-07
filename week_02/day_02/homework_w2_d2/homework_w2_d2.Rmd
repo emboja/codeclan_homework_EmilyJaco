@@ -27,7 +27,12 @@ names(tweets)
 ```{r}
 tweets %>% 
   filter(favorite_count >= 1, is_quote == FALSE) %>% 
-  count()
+  count() #or summarise(n = n())
+
+#counts total favorites
+tweets %>% 
+  filter(is_quote == FALSE) %>% 
+  summarise(total = sum(favorite_count))
 ```
 
 # 3. Summarise the mean number of retweets (retweet_count), split by the type of platform that was used to tweet (source). Again, omit quoted tweets from the mean.
@@ -60,7 +65,7 @@ tweets %>%
 ```{r}
 info <- read.csv("data/code_clan_info.csv")
 info
-join <- inner_join(tweets, info, by = "tweet_id")
+join <- left_join(tweets, info, by = "tweet_id")
 join
 ```
 
@@ -68,7 +73,12 @@ join
 
 ```{r}
 codeclan_hashtags <- join %>% 
-  select(tweet_id, hashtags)
+  select(tweet_id, hashtags) %>% 
+  mutate(lowercase_hashtag = str_to_lower(hashtags)) %>% 
+  select(-hashtags) %>% 
+  drop_na(lowercase_hashtag)
+
+#filter(str_to_lower(hashtags) == hashtags)
 
 codeclan_hashtags
 ```
