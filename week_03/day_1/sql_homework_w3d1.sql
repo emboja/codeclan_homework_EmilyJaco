@@ -73,14 +73,34 @@ WHERE first_name IS NOT NULL AND last_name IS NOT NULL AND department IS NOT NUL
 /* 10. One of the conference organisers thinks it would be nice to add the year of the employees’ start_date to the badge_label to celebrate long-standing colleagues, in the following style ‘Bob Smith - Legal (joined 1998)’. Further restrict output to only those employees with a stored start_date." */
 
 SELECT
-first_name,
-last_name,
-department,
-EXTRACT(YEAR FROM start_date),
-CONCAT(first_name, ' ', last_name, ' ', '-', ' ', department, ' ', '(joined', ' ', start_date, ')')AS badge_label
+  first_name,
+  last_name,
+  department,
+  start_date,
+  CONCAT(
+    first_name, ' ', last_name, ' - ', department, 
+    ' (joined ', EXTRACT(YEAR FROM start_date), ')'
+  ) AS badge_label
 FROM employees
-WHERE first_name IS NOT NULL AND last_name IS NOT NULL AND department IS NOT NULL AND start_date IS NOT NULL;
+WHERE 
+  first_name IS NOT NULL AND 
+  last_name IS NOT NULL AND 
+  department IS NOT NULL AND
+  start_date IS NOT NULL;
+
 
 SELECT
-EXTRACT(YEAR FROM start_date),
-FROM employees;
+first_name,
+  last_name,
+  department,
+  start_date,
+  CONCAT(
+    first_name, ' ', last_name, ' - ', department, ' (joined ', 
+    TO_CHAR(start_date, 'Month'), ' ', TO_CHAR(start_date, 'YYYY'), ')'
+  ) AS badge_label
+FROM employees
+WHERE 
+  first_name IS NOT NULL AND 
+  last_name IS NOT NULL AND 
+  department IS NOT NULL AND
+  start_date IS NOT NULL;
