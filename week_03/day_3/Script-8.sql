@@ -153,3 +153,31 @@ INNER JOIN total_employees as t
 ON e.department = t.department    
 WHERE grade = 1
 GROUP BY e.department, t.no_employees;
+
+
+ANSWERS:
+
+WITH grade_1_count AS (
+SELECT
+	department,
+	CAST(COUNT(id) AS REAL) AS count_grade_1
+FROM employees
+WHERE grade = 1
+GROUP BY department
+),
+department_count AS (
+SELECT
+	department,
+	COUNT(id) AS count_all
+FROM employees
+GROUP BY department
+)
+SELECT
+	dc.department,
+	g1.count_grade_1,
+	dc.count_all,
+	g1.count_grade_1/dc.count_all AS grade_1_prop
+FROM department_count AS dc
+INNER JOIN grade_1_count as g1
+ON dc.department = g1.department;
+
