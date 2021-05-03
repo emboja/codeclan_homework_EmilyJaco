@@ -36,3 +36,7 @@ output$sales_plot <- renderPlot({
 }
 
 shinyApp(ui = ui, server = server)
+
+# This interactive visualisation shows the games sales separated by the publisher of the game and coloured in by the rating. The user can change the chart based on the genre of the game.
+# I picked viewing the data this way as I think it clearly shows the market leaders in each genre of game and it could be updated with annual sales data to show the fluctuation of different companies each year.
+# I think the fill of the rating shows insight into the popularity of each rating in each genre and could be a good indication for a publisher for which rating they should aim for their game to have.
