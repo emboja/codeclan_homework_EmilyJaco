@@ -1,0 +1,54 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(prob)
+library(gtools)
+library(tidyverse)
+```
+
+```{r}
+titanic <- read_csv("data/titanic.csv")
+
+titanic
+```
+
+```{r}
+titanic <- 
+  titanic %>% 
+  mutate(crew = class %in% c("engineering crew", "victualling crew", "restaurant staff", "deck crew"))
+```
+1. If I roll a six-sided dice once, what is the probability of getting a number less than 5?
+
+```{r}
+rolldie(1) %>% 
+  filter(X1 < 5)
+
+4/6
+```
+
+2. How many outcomes are there in the sample space of an experiment in which we toss three dice?
+
+```{r}
+rolldie(3)
+
+216
+```
+
+3. In an experiment where we roll four dice:
+
+i. how many outcomes are in the event total_equals_5_6_7 (i.e. the total of the four dice equals 5, 6 or 7)?
+ii. what is the probability of this event?
+iii. what assumptions do we apply in answering part ii?
+
+```{r}
+rolldie(4) #1296
+
+(2, 1, 1, 1)
+(3, 1, 1, 1)
+(4, 1, 1, 1)
+
+```
+
