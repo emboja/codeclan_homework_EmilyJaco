@@ -20,6 +20,19 @@ titanic <-
   titanic %>% 
   mutate(crew = class %in% c("engineering crew", "victualling crew", "restaurant staff", "deck crew"))
 ```
+
+```{r}
+titanic %>% 
+  filter(crew == TRUE) %>% 
+  summarise(prob = sum(survived == "yes")/n())
+```
+```{r}
+titanic %>% 
+  filter(crew == FALSE) %>% 
+  summarise(prob = sum(survived == "yes")/n())
+```
+
+
 1. If I roll a six-sided dice once, what is the probability of getting a number less than 5?
 
 ```{r}
@@ -46,9 +59,6 @@ iii. what assumptions do we apply in answering part ii?
 ```{r}
 rolldie(4) #1296
 
-(2, 1, 1, 1)
-(3, 1, 1, 1)
-(4, 1, 1, 1)
 
 ```
 
