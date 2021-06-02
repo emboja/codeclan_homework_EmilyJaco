@@ -1,0 +1,141 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(GGally)
+library(fastDummies)
+library(ggfortify)
+```
+
+1. Load the diamonds.csv data set and undertake an initial exploration of the data. You will find a description of the meanings of the variables on the relevant Kaggle page
+
+```{r}
+diamonds <- read_csv("data/diamonds.csv")
+
+diamonds
+```
+
+2. We expect the carat of the diamonds to be strong correlated with the physical dimensions x, y and z. Use ggpairs() to investigate correlations between these four variables.
+
+```{r}
+diamonds_xyz <- diamonds %>% 
+  select(carat, x, y, z)
+
+ggpairs(diamonds_xyz, progress = FALSE)
+```
+
+3. So, we do find significant correlations. Let’s drop columns x, y and z from the dataset, in preparation to use only carat going forward.
+
+```{r}
+diamonds <- diamonds %>% 
+  select(-x, -y, -z)
+
+diamonds
+```
+
+4. We are interested in developing a regression model for the price of a diamond in terms of the possible predictor variables in the dataset.
+i. Use ggpairs() to investigate correlations between price and the predictors (this may take a while to run, don’t worry, make coffee or something).
+
+```{r}
+ggpairs(diamonds, progress = FALSE)
+```
+
+ii. Perform further ggplot visualisations of any significant correlations you find.
+
+```{r}
+diamonds %>% 
+  ggplot(aes(x = carat, y = price)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+diamonds %>% 
+  ggplot(aes(x = cut, y = price)) +
+  geom_col() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+diamonds %>% 
+  ggplot(aes(x = color, y = price)) +
+  geom_col()
+```
+
+```{r}
+diamonds %>% 
+  ggplot(aes(x = clarity, y = price)) +
+  geom_col()
+```
+
+```{r}
+diamonds %>% 
+  ggplot(aes(x = table, y = price)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+5. Shortly we may try a regression fit using one or more of the categorical predictors cut, clarity and color, so let’s investigate these predictors:
+i. Investigate the factor levels of these predictors. How many dummy variables do you expect for each of them?
+
+```{r}
+diamonds %>% 
+  distinct(cut) # 5
+
+diamonds %>% 
+  distinct(clarity) # 8
+
+diamonds %>% 
+  distinct(color) # 7
+```
+
+ii. Use the dummy_cols() function in the fastDummies package to generate dummies for these predictors and check the number of dummies in each case.
+
+```{r}
+diamonds_cut <- diamonds %>% 
+  dummy_cols(select_columns = "cut",
+             remove_first_dummy = TRUE,
+             remove_selected_columns = TRUE)
+
+diamonds_cut
+```
+
+```{r}
+diamonds_clarity <- diamonds %>% 
+  dummy_cols(select_columns = "clarity",
+             remove_first_dummy = TRUE,
+             remove_selected_columns = TRUE)
+
+diamonds_clarity
+```
+
+```{r}
+diamonds_color <- diamonds %>% 
+  dummy_cols(select_columns = "color",
+             remove_first_dummy = TRUE,
+             remove_selected_columns = TRUE)
+
+diamonds_color
+```
+
+
+6. Start with simple linear regression. Regress price on carat and check the regression diagnostics.
+
+```{r}
+model_carat <- lm(price ~ carat, data = diamonds)
+autoplot(model_carat)
+```
+
+
+
+7. Add another predictor of your choice. Check your assumptions, diagnostics, and interpret the model.
+
+
+2 Extension
+Try adding an interaction between log(carat) and your chosen categorical predictor. Do you think this interaction term is statistically justified?
+
+
+Find and plot an appropriate visualisation to show the effect of this interaction
